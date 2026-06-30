@@ -33,18 +33,25 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 function App() {
-  const { user, logout } = useAuth();
+  const { user, logout, isOfflineMode } = useAuth();
   const location = useLocation();
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   if (isAuthPage) {
     return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <>
+        {isOfflineMode && (
+          <div className="bg-warning text-dark text-center fw-bold py-2 small font-title shadow-sm" style={{ zIndex: 1000, position: 'relative', fontSize: '11px' }}>
+            ⚠️ Demo Mode Active: The local backend server is not running. Authentication and AI predictions are running locally in your browser.
+          </div>
+        )}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </>
     );
   }
 
@@ -59,7 +66,12 @@ function App() {
             </div>
             <div>
               <span className="h5 mb-0 fw-bold d-block font-title text-gradient-purple">StressSense</span>
-              <small className="text-secondary fw-semibold">AI Stress Predictor</small>
+              <div className="d-flex align-items-center gap-2">
+                <small className="text-secondary fw-semibold">AI Stress Predictor</small>
+                {isOfflineMode && (
+                  <span className="badge bg-warning text-dark font-title" style={{ fontSize: '8px', padding: '2px 4px', fontWeight: 'bold' }}>DEMO</span>
+                )}
+              </div>
             </div>
           </div>
 
